@@ -21,20 +21,19 @@ func main() {
 	}
 	res_Final, nb := Fonctions.AsciiArt(banner, output, res_Color, str, align, &countLetter)
 	if output == nil && align != "" {
-		res_Final = Fonctions.AlignText(res_Final, align, &countLetter, Fonctions.GetTerminalSize())
+		res_Final = Fonctions.AlignText(res_Final, align, &countLetter, Fonctions.GetTerminalSize(), nb)
 	}
 	if output != nil {
 		for _, r := range output {
 			bannerOutput, _ := os.ReadFile(r)
 			if !Fonctions.CheakFormatBanner(bannerOutput, str, nb) {
-				err := os.WriteFile(r, []byte(res_Final), 0o644)
+				err := os.WriteFile(r, []byte(res_Final), 0644)
 				if err != nil {
 					return
 				}
 			} else {
 				fmt.Println("\033[31mimpossible to modify this banner\033[0m")
 			}
-
 		}
 	} else {
 		fmt.Print(res_Final)

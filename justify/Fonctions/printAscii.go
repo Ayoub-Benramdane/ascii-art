@@ -96,7 +96,6 @@ func AddLine(tableau [][]string, str, align string, output, res_Color []string, 
 			if !fLine {
 				fLine = true
 				*countLetter = append(*countLetter, len(firstLine))
-				fmt.Println(countLetter)
 			}
 		}
 	}
