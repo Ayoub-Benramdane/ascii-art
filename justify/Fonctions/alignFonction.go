@@ -1,6 +1,7 @@
 package Fonctions
 
 import (
+	"fmt"
 	"os"
 	"os/exec"
 	"strconv"
@@ -16,19 +17,24 @@ func GetTerminalSize() int {
 	return width
 }
 
-func AlignText(text, align string, countLetter *[]int, width, nb1 int) string {
+func CheckPadding(line string, width, countLetter int, align *string, imp *bool) (int, string) {
+	padding := width + countLetter - len(line)
+	if len(line) > width+countLetter {
+		if !*imp {
+			*imp = true
+			fmt.Println("\033[31mImpossible to align this text\033[0m")
+		}
+		*align = "left"
+	}
+	return padding, line
+}
+
+func AlignText(text, align string, countLetter *[]int, width, nb int) string {
 	lines := strings.Split(text, "\n")
 	var res_Final strings.Builder
-	var nb int
+	var imp bool
 	for i := 0; i < len(lines)-1; i++ {
-		line := lines[i]
-		if i != 0 && i%nb1 == 0 {
-			nb++
-		}
-		padding := width + (*countLetter)[nb] - len(line)
-		if len(line) > width+(*countLetter)[nb] {
-			align = "left"
-		}
+		padding, line := CheckPadding(lines[i], width, (*countLetter)[i/nb], &align, &imp)
 		switch align {
 		case "center":
 			res_Final.WriteString(strings.Repeat(" ", padding/2))
@@ -37,8 +43,8 @@ func AlignText(text, align string, countLetter *[]int, width, nb1 int) string {
 		case "justify":
 			words := strings.Split(line, "      $")
 			if len(words) > 1 {
-				total_Spaces := width - len(line) + 7*(len(words)-1) + (*countLetter)[nb]
-				if len(line) > width+7*(len(words)-1)+(*countLetter)[nb] {
+				total_Spaces := width - len(line) + 7*(len(words)-1) + (*countLetter)[i/nb]
+				if len(line) > width+7*(len(words)-1)+(*countLetter)[i/nb] {
 					total_Spaces = -total_Spaces
 				}
 				space_Between_Words := total_Spaces / (len(words) - 1)
