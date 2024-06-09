@@ -16,10 +16,10 @@ func AsciiArt(Banner string, output, res_Color []string, str, align string, coun
 		os.Exit(0)
 	}
 	res_Color = GetColor(res_Color)
-	return PrintAsciiArt(string(fichier), output, res_Color, str, align, *countLetter)
+	return PrintAsciiArt(string(fichier), output, res_Color, str, align, countLetter)
 }
 
-func PrintAsciiArt(banner string, output, res_Color []string, arg, align string, countLetter []int) (string, int) {
+func PrintAsciiArt(banner string, output, res_Color []string, arg, align string, countLetter *[]int) (string, int) {
 	var resultat_Final string
 	var result string
 	banner = strings.ReplaceAll(banner, "\r", "")
@@ -41,7 +41,6 @@ func PrintAsciiArt(banner string, output, res_Color []string, arg, align string,
 			result = ""
 		}
 		if len(res_Color) != 0 {
-
 			res_Color = res_Color[len(str):]
 		}
 	}
@@ -66,9 +65,9 @@ func AsciiTable(split_File []string) ([][]string, int) {
 	return tableau, len(tableau[0])
 }
 
-func AddLine(tableau [][]string, str, align string, output, res_Color []string, countLetter []int, nb int) string {
+func AddLine(tableau [][]string, str, align string, output, res_Color []string, countLetter *[]int, nb int) string {
 	var resultat_Final, firstLine string
-	var err bool
+	var err, fLine bool
 	for k := 0; k < nb*len(str); k++ {
 		Line := k / len(str) % nb
 		Character := k % len(str)
@@ -94,9 +93,10 @@ func AddLine(tableau [][]string, str, align string, output, res_Color []string, 
 		}
 		if (k+1)%len(str) == 0 && resultat_Final != "" {
 			resultat_Final += "\n"
-			if 1%len(str) == 0 {
-				fmt.Println("lol")
-				countLetter = append(countLetter, len(firstLine))
+			if !fLine {
+				fLine = true
+				*countLetter = append(*countLetter, len(firstLine))
+				fmt.Println(countLetter)
 			}
 		}
 	}

@@ -22,6 +22,7 @@ func AlignText(text, align string, countLetter *[]int, width int) string {
 	var res_Final strings.Builder
 	for i := 0; i < len(lines)-1; i++ {
 		line := lines[i]
+		fmt.Println(countLetter)
 		padding := width + (*countLetter)[0] - len(line)
 		fmt.Println(countLetter)
 		if len(line) > width+(*countLetter)[0] {
