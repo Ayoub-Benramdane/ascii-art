@@ -14,13 +14,14 @@ func main() {
 	}
 	var color, letters_to_be_colored, output, res_Color []string
 	var str, banner, align string
+	var countLetter []int
 	Fonctions.GetArgs(os.Args[1:], &color, &letters_to_be_colored, &output, &align, &str, &banner)
 	if output == nil && color != nil {
 		res_Color = Fonctions.GetLetColor(color, letters_to_be_colored, str)
 	}
-	res_Final, nb, countLetter := Fonctions.AsciiArt(banner, output, res_Color, str, align)
+	res_Final, nb := Fonctions.AsciiArt(banner, output, res_Color, str, align, &countLetter)
 	if output == nil && align != "" {
-		res_Final = Fonctions.AlignText(res_Final, align, countLetter, Fonctions.GetTerminalSize())
+		res_Final = Fonctions.AlignText(res_Final, align, &countLetter, Fonctions.GetTerminalSize())
 	}
 	if output != nil {
 		for _, r := range output {

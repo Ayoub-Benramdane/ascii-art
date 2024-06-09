@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-func AsciiArt(Banner string, output, res_Color []string, str, align string) (string, int, int) {
+func AsciiArt(Banner string, output, res_Color []string, str, align string, countLetter *[]int) (string, int) {
 	if len(Banner) < 4 || Banner[len(Banner)-4:] != ".txt" {
 		Banner += ".txt"
 	}
@@ -16,12 +16,11 @@ func AsciiArt(Banner string, output, res_Color []string, str, align string) (str
 		os.Exit(0)
 	}
 	res_Color = GetColor(res_Color)
-	return PrintAsciiArt(string(fichier), output, res_Color, str, align)
+	return PrintAsciiArt(string(fichier), output, res_Color, str, align, *countLetter)
 }
 
-func PrintAsciiArt(banner string, output, res_Color []string, arg, align string) (string, int, int) {
+func PrintAsciiArt(banner string, output, res_Color []string, arg, align string, countLetter []int) (string, int) {
 	var resultat_Final string
-	var countLet int
 	var result string
 	banner = strings.ReplaceAll(banner, "\r", "")
 	tableau, nb := AsciiTable(strings.Split(banner[1:], "\n\n"))
@@ -37,7 +36,7 @@ func PrintAsciiArt(banner string, output, res_Color []string, arg, align string)
 			resultat_Final += "\n"
 			continue
 		} else {
-			result, countLet = AddLine(tableau, str, align, output, res_Color)
+			result = AddLine(tableau, str, align, output, res_Color, countLetter, nb)
 			resultat_Final += result
 			result = ""
 		}
@@ -48,7 +47,7 @@ func PrintAsciiArt(banner string, output, res_Color []string, arg, align string)
 	}
 	Lines = nil
 	tableau = nil
-	return resultat_Final, nb, countLet
+	return resultat_Final, nb
 }
 
 func AsciiTable(split_File []string) ([][]string, int) {
@@ -60,19 +59,18 @@ func AsciiTable(split_File []string) ([][]string, int) {
 		if i == len(tableau)-1 && len(tableau[i]) == len(tableau[0])+1 {
 			continue
 		} else if len(tableau[i]) != len(tableau[0]) {
-			fmt.Println("\x1b[38;5;190mBanner format not valid!kk\033[0m")
+			fmt.Println("\x1b[38;5;190mBanner format not valid!\033[0m")
 			os.Exit(0)
 		}
 	}
 	return tableau, len(tableau[0])
 }
 
-func AddLine(tableau [][]string, str, align string, output, res_Color []string) (string, []int) {
+func AddLine(tableau [][]string, str, align string, output, res_Color []string, countLetter []int, nb int) string {
 	var resultat_Final, firstLine string
 	var err bool
-	var countLetter int
-	for k := 0; k < 8*len(str); k++ {
-		Line := k / len(str) % 8
+	for k := 0; k < nb*len(str); k++ {
+		Line := k / len(str) % nb
 		Character := k % len(str)
 		if int(str[Character]) < 32 || int(str[Character]) > 126 {
 			if !err {
@@ -96,12 +94,13 @@ func AddLine(tableau [][]string, str, align string, output, res_Color []string) 
 		}
 		if (k+1)%len(str) == 0 && resultat_Final != "" {
 			resultat_Final += "\n"
-			if countLetter == 0 {
-				countLetter = len(firstLine)
+			if 1%len(str) == 0 {
+				fmt.Println("lol")
+				countLetter = append(countLetter, len(firstLine))
 			}
 		}
 	}
-	return resultat_Final, countLetter
+	return resultat_Final
 }
 
 func PrintColor(resultat_Final, str string, firstLine *string, res_Color []string, tableau [][]string, Character, Line int) string {

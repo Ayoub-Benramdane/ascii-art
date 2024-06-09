@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-func AsciiArt(Banner string, output, res_Color []string, str string) (string,int) {
+func AsciiArt(Banner string, output, res_Color []string, str string) (string, int) {
 	if len(Banner) < 4 || Banner[len(Banner)-4:] != ".txt" {
 		Banner += ".txt"
 	}
@@ -55,10 +55,10 @@ func AsciiTable(split_File []string) ([][]string, int) {
 		tableau = append(tableau, strings.Split(split_File[i], "\n"))
 	}
 	for i := 0; i < len(tableau); i++ {
-		if i == len(tableau) - 1 &&  len(tableau[i]) == len(tableau[0]) + 1 {
+		if i == len(tableau)-1 && len(tableau[i]) == len(tableau[0])+1 {
 			continue
-		}else if len(tableau[i]) != len(tableau[0]) {
-			fmt.Println("\x1b[38;5;190mBanner format not valid!kk\033[0m")
+		} else if len(tableau[i]) != len(tableau[0]) {
+			fmt.Println("\x1b[38;5;190mBanner format not valid!\033[0m")
 			os.Exit(0)
 		}
 	}

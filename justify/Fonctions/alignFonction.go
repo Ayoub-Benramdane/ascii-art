@@ -17,14 +17,14 @@ func GetTerminalSize() int {
 	return width
 }
 
-func AlignText(text, align string, countLetter int, width int) string {
+func AlignText(text, align string, countLetter *[]int, width int) string {
 	lines := strings.Split(text, "\n")
 	var res_Final strings.Builder
 	for i := 0; i < len(lines)-1; i++ {
 		line := lines[i]
-		padding := width + countLetter - len(line)
+		padding := width + (*countLetter)[0] - len(line)
 		fmt.Println(countLetter)
-		if len(line) > width+countLetter {
+		if len(line) > width+(*countLetter)[0] {
 			align = "left"
 		}
 		switch align {
@@ -35,8 +35,8 @@ func AlignText(text, align string, countLetter int, width int) string {
 		case "justify":
 			words := strings.Split(line, "      $")
 			if len(words) > 1 {
-				total_Spaces := width - len(line) + 7*(len(words)-1) + countLetter
-				if len(line) > width+7*(len(words)-1)+countLetter {
+				total_Spaces := width - len(line) + 7*(len(words)-1) + (*countLetter)[0]
+				if len(line) > width+7*(len(words)-1)+(*countLetter)[0] {
 					total_Spaces = -total_Spaces
 				}
 				space_Between_Words := total_Spaces / (len(words) - 1)
